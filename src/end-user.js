@@ -24,7 +24,7 @@ function ActivateEditMails() {
   /* activates only the edit-sensing mail-sending feature */
   // createOnOpenTrigger();
   createSpreadsheetEditTrigger();
-  createTimeEditTrigger();
+//  createTimeEditTrigger();
 }
 
 function DeactivateEditMails() {

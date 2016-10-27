@@ -51,3 +51,8 @@ function deleteTriggersWithNames(names) {
       }
   }
 }
+function stringToArray(string)
+{
+var array=string.split(',');
+return array;
+}

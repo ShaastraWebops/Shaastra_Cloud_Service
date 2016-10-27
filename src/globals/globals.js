@@ -15,8 +15,10 @@ var SPREADSHEET_ID = "12XEXoyraDpmkLI4babFWmqpbYYDCwo05KAlTHsiLydw";
 var SHEET_NAME = "Event wise";     // the name of the sheet inside the spreadsheet that is to be used
                                    // (EXACTLY as specified in the actual spreadsheet, with matching case, punctuation etc)
 
-var NUMBER_OF_DAYS = 2;            // total number of days in Shaastra (including Day 0)
+var NUMBER_OF_DAYS = 3;            // total number of days in Shaastra (including Day 0)
 var DAY_0_STRING = "2016/10/10";   // YYYY/MM/DD formatted date of Day 0
+
+var EDIT_MAILS_INTERVAL = 5;      // edit-sensing mails: time period (minutes) with which mails will be sent
 
 var TIME_SLOTS = [
   [8, 00, 9, 00],
@@ -63,8 +65,11 @@ var SHEET_COLUMNS = {
 var SPREADSHEET_LINK = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/";
 var DAY_0_DATE = new Date(DAY_0_STRING);
 
+var EDIT_MAILS_EXPIRY = 60 * (1 + EDIT_MAILS_INTERVAL);
+
 // variables, re-initialized on every function call, NOT editable by the end user
 var sheetToUse = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);
 SPREADSHEET_LINK += "edit#gid=" + sheetToUse.getSheetId();
 
 var scriptProperties = PropertiesService.getScriptProperties();
+var cache = CacheService.getScriptCache();
