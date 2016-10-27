@@ -1,6 +1,6 @@
 function updateTotalsAndSendMails() {
-  var day = parseInt(scriptProperties.getProperty("timeslot-firingDay"));
-  var slot = parseInt(scriptProperties.getProperty("timeslot-firingSlot"));
+  var day = parseInt(scriptProperties.getProperty(PROP_FIRING_DAY));
+  var slot = parseInt(scriptProperties.getProperty(PROP_FIRING_SLOT));
   
   var dayStartRow, dayEndRow;
   
@@ -84,8 +84,7 @@ function sendMailsToCheckInventory(mailIDs) {
                 "confirm your total requirements for that slot.\n" + 
                 "The spreadsheet is here: " + SPREADSHEET_LINK;
   
-  for (var i = 0; i < mailIDs.length; ++i)
-    MailApp.sendEmail(mailIDs[i], subject, body);
+  MailApp.sendEmail(mailIDs.join(), subject, body);
 }
 
 function getNextFiringDate() {
@@ -111,14 +110,12 @@ function getNextFiringDate() {
 }
 
 function createInventoryTimeBasedTrigger(fromEndUser) {
-  deleteAllInventoryTriggers();
-  
   var firingDate = getNextFiringDate();
   
   if (firingDate === null) {
     if (fromEndUser)
-      throw "You are using the script after the beginning of the last time slot of Shaastra 2017, " +
-        "so it will not do anything.";
+      throw "You are using the script after the beginning of the "
+            + " last time slot of Shaastra 2017, so it will not do anything.";
   }
   else 
     ScriptApp.newTrigger("updateTotalsAndSendMails")
@@ -129,4 +126,9 @@ function createInventoryTimeBasedTrigger(fromEndUser) {
 
 function deleteAllInventoryTriggers() {
   deleteTriggersWithNames(["updateTotalsAndSendMails"]);
+}
+
+function clearPropsForInventory() {
+  scriptProperties.deleteProperty(PROP_FIRING_DAY);
+  scriptProperties.deleteProperty(PROP_FIRING_SLOT);
 }

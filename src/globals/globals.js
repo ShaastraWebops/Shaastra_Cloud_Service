@@ -65,7 +65,11 @@ var SHEET_COLUMNS = {
 var SPREADSHEET_LINK = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/";
 var DAY_0_DATE = new Date(DAY_0_STRING);
 
-var EDIT_MAILS_EXPIRY = 60 * (1 + EDIT_MAILS_INTERVAL);
+var EDIT_MAILS_EXPIRY = 60 * (1 + EDIT_MAILS_INTERVAL);   // in seconds, 1min buffer time added
+var KEY_ALL_MAIL_IDS = "editsense-allIDs";
+
+var PROP_FIRING_DAY = "timeslot-firingDay";
+var PROP_FIRING_SLOT = "timeslot-firingSlot";
 
 // variables, re-initialized on every function call, NOT editable by the end user
 var sheetToUse = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);

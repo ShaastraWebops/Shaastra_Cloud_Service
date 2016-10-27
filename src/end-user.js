@@ -22,24 +22,28 @@
 
 function ActivateEditMails() {
   /* activates only the edit-sensing mail-sending feature */
+  DeactivateEditMails();
   // createOnOpenTrigger();
   createSpreadsheetEditTrigger();
-//  createTimeEditTrigger();
+  createTimeEditTrigger();
 }
 
 function DeactivateEditMails() {
   /* deactivates only the edit-sensing mail-sending feature */
   deleteAllEmailTriggers();
+  clearCacheForEditMails();
 }
 
 function ActivateTimeSlotInventory() {
   /* activates only the time-slot based inventory management feature */
+  DeactivateTimeSlotInventory();
   createInventoryTimeBasedTrigger(true);
 }
 
 function DeactivateTimeSlotInventory() {
   /* deactivates only the time-slot based inventory management feature */
   deleteAllInventoryTriggers();
+  clearPropsForInventory();
 }
 
 function ActivateAll() {

@@ -37,22 +37,20 @@ function getHMFromFormattedCell(displayValue) {
   return [hh, mm];
 }
 
-function deleteTriggersWithNames(names) {
-  var triggers = ScriptApp.getProjectTriggers();
-  var fnName = "";
-  var i, j;
-  for (i = 0; i < triggers.length; i++) 
-  {
-    fnName = triggers[i].getHandlerFunction();
-    for (j = 0; j < names.length; ++j)
-      if (fnName === names[j]) {
-        ScriptApp.deleteTrigger(triggers[i]);
-        break;
-      }
-  }
+function appendToCacheArray(key, newValue, expiryTime) {
+  var oldValues = cache.get(key);
+  if (oldValues == null)
+    cache.put(key, newValue, expiryTime);
+  else if (oldValues.indexOf(newValue) == -1)
+    cache.put(key, oldValues + "," + newValue, expiryTime);
 }
-function stringToArray(string)
-{
-var array=string.split(',');
-return array;
+
+function deleteTriggersWithNames(names) {
+  var allTriggers = ScriptApp.getProjectTriggers();
+  var i;
+  for (i = 0; i < allTriggers.length; ++i) 
+                        // apparently "for(t in allTriggers)" doesn't work well
+    if (names.indexOf(allTriggers[i].getHandlerFunction()) != -1)
+                        // apparently "includes()" doesn't work
+      ScriptApp.deleteTrigger(allTriggers[i]);
 }
