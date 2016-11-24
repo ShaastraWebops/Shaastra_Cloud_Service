@@ -18,7 +18,7 @@ var SHEET_NAME = "Event wise";     // the name of the sheet inside the spreadshe
 var NUMBER_OF_DAYS = 3;            // total number of days in Shaastra (including Day 0)
 var DAY_0_STRING = "2016/10/10";   // YYYY/MM/DD formatted date of Day 0
 
-var EDIT_MAILS_INTERVAL = 5;      // edit-sensing mails: time period (minutes) with which mails will be sent
+var EDIT_MAILS_INTERVAL = 1;      // edit-sensing mails: time period (minutes) with which mails will be sent
 
 var TIME_SLOTS = [
   [8, 00, 9, 00],
@@ -70,6 +70,8 @@ var KEY_ALL_MAIL_IDS = "editsense-allIDs";
 
 var PROP_FIRING_DAY = "timeslot-firingDay";
 var PROP_FIRING_SLOT = "timeslot-firingSlot";
+
+var REGEX_EMAIL_VALIDATION = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
 // variables, re-initialized on every function call, NOT editable by the end user
 var sheetToUse = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);

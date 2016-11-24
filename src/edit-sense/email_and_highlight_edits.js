@@ -1,11 +1,30 @@
 function updateCacheForEdit(e) {
+  Logger.log("Edit trigger activated");
   var editedRange = e.range;
-
-  var editedEmail = sheetToUse.getRange(
-                          SHEET_COLUMNS.coordEmail + editedRange.getRow()
-                              ).getValue();
-  appendToCacheArray(KEY_ALL_MAIL_IDS, editedEmail, EDIT_MAILS_EXPIRY);
-  appendToCacheArray(editedEmail, editedRange.getA1Notation(), EDIT_MAILS_EXPIRY);
+  var firstCol = editedRange.getColumn(), firstRow = editedRange.getRow(),
+      lastCol = editedRange.getLastColumn(), lastRow = editedRange.getLastRow();
+  
+  if (firstCol > getColNumberFromName(SHEET_COLUMNS.requirementsEnd))
+    Logger.log("Range past end");
+  else if (lastCol < getColNumberFromName(SHEET_COLUMNS.requirementsStart))
+    Logger.log("Range before start");
+  else {
+    Logger.log("Good range");
+    var editedEmail = "";
+    for (var row = firstRow; row <= lastRow; ++row) {
+      editedEmail = sheetToUse.getRange(
+        SHEET_COLUMNS.coordEmail + row
+      ).getDisplayValue();
+      Logger.log("Email col value: " + editedEmail);
+      if (isInEmailForm(editedEmail)) {
+        Logger.log("In email form");
+        appendToCacheArray(KEY_ALL_MAIL_IDS, editedEmail, EDIT_MAILS_EXPIRY);
+        appendToCacheArray(editedEmail,
+                           getRange(row, firstCol, row, lastCol).getA1Notation(),
+                           EDIT_MAILS_EXPIRY);
+      }
+    }
+  }
 }
 
 function createSpreadsheetEditTrigger() {
@@ -24,6 +43,7 @@ function createTimeEditTrigger() {
 
 function sendMailsFromCache() {
   // sheetToUse.getRange(values[mailAddress]).setBackground("red");
+  Logger.log("Timed trigger activated");
   var allMailIDs = cache.get(KEY_ALL_MAIL_IDS);    
   if (allMailIDs != null) {
     sendMailsToSeeEdits(allMailIDs.split(','));

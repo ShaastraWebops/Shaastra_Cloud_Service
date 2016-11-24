@@ -6,6 +6,17 @@ function getRange(row1, col1, row2, col2) {
   );
 }
 
+function isInEmailForm(str) {
+  return REGEX_EMAIL_VALIDATION.test(str);
+}
+
+function getColNumberFromName(colName) {
+  var res = 0, codeOffset = 'A'.charCodeAt(0) - 1;
+  for (var i = 0; i < colName.length; ++i)
+    res = 26 * res + (colName.charCodeAt(i) - codeOffset);
+  return res;
+}
+
 function getHMFromFormattedCell(displayValue) {
   var hh = "", mm = "", c, modifier = "";
   var hDone = false, mDone = false;
