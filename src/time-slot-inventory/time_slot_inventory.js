@@ -1,6 +1,18 @@
-function updateTotalsAndSendMails() {
-  var day = parseInt(scriptProperties.getProperty(PROP_FIRING_DAY));
-  var slot = parseInt(scriptProperties.getProperty(PROP_FIRING_SLOT));
+function updateSlotTotalsAndGetIDs(useLastFired) {
+  var day, slot;
+  if (useLastFired) {
+    day = scriptProperties.getProperty(PROP_LAST_FIRED_DAY);
+    slot = scriptProperties.getProperty(PROP_LAST_FIRED_SLOT);
+  }
+  else {
+    day = scriptProperties.getProperty(PROP_FIRING_DAY);
+    slot = scriptProperties.getProperty(PROP_FIRING_SLOT);
+  }
+  
+  if (day == null || slot == null) return null;
+
+  day = parseInt(day);
+  slot = parseInt(slot);
   
   var dayStartRow, dayEndRow;
   
@@ -53,10 +65,9 @@ function updateTotalsAndSendMails() {
   }
   
   dayTotalsRange.setValues([dayTotals]);
-  sendMailsToCheckInventory(mailIDs);
-  
-  createInventoryTimeBasedTrigger(false);   // trigger for the next time slot
+  return mailIDs;
 }
+
 
 function isWithinSlot(hm, slot) {
   if (hm[0] === -1 || hm[0] === NaN) return false;
@@ -87,6 +98,28 @@ function sendMailsToCheckInventory(mailIDs) {
   MailApp.sendEmail(mailIDs.join(), subject, body);
 }
 
+function updateLastFired() {
+  var day, slot;
+  day = scriptProperties.getProperty(PROP_FIRING_DAY);
+  slot = scriptProperties.getProperty(PROP_FIRING_SLOT);
+  if (day == null || slot == null) return ;
+
+  scriptProperties.setProperty(PROP_LAST_FIRED_DAY, parseInt(day));
+  scriptProperties.setProperty(PROP_LAST_FIRED_SLOT, parseInt(slot));
+}
+
+function updateTotalsAndSendMails() {
+  var mailIDs = updateSlotTotalsAndGetIDs(false);
+  sendMailsToCheckInventory(mailIDs);
+
+  updateLastFired();
+  createInventoryTimeBasedTrigger(false);   // trigger for the next time slot
+}
+
+function updateTotalsForEdit (e) {
+  updateSlotTotalsAndGetIDs(true);
+}
+
 function getNextFiringDate() {
   var currentDate = new Date();
   var firingDate = new Date(DAY_0_DATE);
@@ -96,9 +129,9 @@ function getNextFiringDate() {
       firingDate.setHours(TIME_SLOTS[slot][0]);
       firingDate.setMinutes(TIME_SLOTS[slot][1] - TIME_SLOT_OFFSET);
       
-      if (currentDate <= firingDate) {
-        scriptProperties.setProperty("timeslot-firingDay", day);
-        scriptProperties.setProperty("timeslot-firingSlot", slot);
+      if (currentDate < firingDate) {
+        scriptProperties.setProperty(PROP_FIRING_DAY, day);
+        scriptProperties.setProperty(PROP_FIRING_SLOT, slot);
         return firingDate;
       }
     }
@@ -124,8 +157,15 @@ function createInventoryTimeBasedTrigger(fromEndUser) {
       .create();
 }
 
+function createInventoryEditTrigger() {
+  ScriptApp.newTrigger("updateTotalsForEdit")
+    .forSpreadsheet(sheetToUse.getParent())
+    .onEdit()
+    .create();
+}
+
 function deleteAllInventoryTriggers() {
-  deleteTriggersWithNames(["updateTotalsAndSendMails"]);
+  deleteTriggersWithNames(["updateTotalsAndSendMails", "updateTotalsForEdit"]);
 }
 
 function clearPropsForInventory() {

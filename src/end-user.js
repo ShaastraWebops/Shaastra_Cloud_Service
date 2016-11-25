@@ -38,6 +38,7 @@ function ActivateTimeSlotInventory() {
   /* activates only the time-slot based inventory management feature */
   DeactivateTimeSlotInventory();
   createInventoryTimeBasedTrigger(true);
+  createInventoryEditTrigger();
 }
 
 function DeactivateTimeSlotInventory() {

@@ -70,8 +70,10 @@ var KEY_ALL_MAIL_IDS = "editsense-allIDs";
 
 var PROP_FIRING_DAY = "timeslot-firingDay";
 var PROP_FIRING_SLOT = "timeslot-firingSlot";
+var PROP_LAST_FIRED_DAY = "timeslot-lastFiredDay";
+var PROP_LAST_FIRED_SLOT = "timeslot-lastFiredSlot";
 
-var REGEX_EMAIL_VALIDATION = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+var REGEX_EMAIL_VALIDATION = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 // variables, re-initialized on every function call, NOT editable by the end user
 var sheetToUse = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);
