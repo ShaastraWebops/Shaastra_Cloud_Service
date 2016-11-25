@@ -15,15 +15,15 @@ var SPREADSHEET_ID = "12XEXoyraDpmkLI4babFWmqpbYYDCwo05KAlTHsiLydw";
 var SHEET_NAME = "Event wise";     // the name of the sheet inside the spreadsheet that is to be used
                                    // (EXACTLY as specified in the actual spreadsheet, with matching case, punctuation etc)
 
-var NUMBER_OF_DAYS = 3;            // total number of days in Shaastra (including Day 0)
-var DAY_0_STRING = "2016/10/10";   // YYYY/MM/DD formatted date of Day 0
+var NUMBER_OF_DAYS = 5;            // total number of days in Shaastra (including Day 0)
+var DAY_0_STRING = "2016/11/26";   // YYYY/MM/DD formatted date of Day 0
 
 var EDIT_MAILS_INTERVAL = 1;      // edit-sensing mails: time period (minutes) with which mails will be sent
 
 var TIME_SLOTS = [
-  [8, 00, 9, 00],
-  [10, 00, 10, 30],
-  [10, 46, 23, 00]
+  [8, 00, 8, 19],
+  [8, 41, 10, 30],
+  [11, 00, 23, 00]
 ];
     // The time slots to use for inventory management, in 24hr format.
     // Please maintain in sorted order, i.e. don't put "9-10am" after "1-2pm" etc.

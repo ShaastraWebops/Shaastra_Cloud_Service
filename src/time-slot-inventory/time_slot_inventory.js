@@ -124,14 +124,22 @@ function getNextFiringDate() {
   var currentDate = new Date();
   var firingDate = new Date(DAY_0_DATE);
   
-  for (var day = 0; day < NUMBER_OF_DAYS; ++day) {
-    for (var slot = 0; slot < TIME_SLOTS.length; ++slot) {
+  var day, lastDay, slot, lastSlot;
+  for (day = 0, lastDay = -1; day < NUMBER_OF_DAYS; ++day, ++lastDay) {
+    for (slot = 0, lastSlot = -1; slot < TIME_SLOTS.length; ++slot, ++lastSlot) {
       firingDate.setHours(TIME_SLOTS[slot][0]);
       firingDate.setMinutes(TIME_SLOTS[slot][1] - TIME_SLOT_OFFSET);
       
       if (currentDate < firingDate) {
         scriptProperties.setProperty(PROP_FIRING_DAY, day);
         scriptProperties.setProperty(PROP_FIRING_SLOT, slot);
+        
+        if (day > 0 || slot > 0) {
+          if (lastSlot == -1) lastSlot = TIME_SLOTS.length - 1;
+          else lastDay = day;
+          scriptProperties.setProperty(PROP_LAST_FIRED_DAY, lastDay);
+          scriptProperties.setProperty(PROP_LAST_FIRED_SLOT, lastSlot);
+        }
         return firingDate;
       }
     }
@@ -150,11 +158,13 @@ function createInventoryTimeBasedTrigger(fromEndUser) {
       throw "You are using the script after the beginning of the "
             + " last time slot of Shaastra 2017, so it will not do anything.";
   }
-  else 
+  else {
+    deleteTriggersWithNames(["updateTotalsAndSendMails"]);
     ScriptApp.newTrigger("updateTotalsAndSendMails")
       .timeBased()
       .at(firingDate)
       .create();
+  }
 }
 
 function createInventoryEditTrigger() {
@@ -162,6 +172,7 @@ function createInventoryEditTrigger() {
     .forSpreadsheet(sheetToUse.getParent())
     .onEdit()
     .create();
+  updateSlotTotalsAndGetIDs(true);  // to initialize the totals rows immediately
 }
 
 function deleteAllInventoryTriggers() {
